@@ -2,7 +2,7 @@
 import { computed, onBeforeUnmount, onMounted, ref } from 'vue'
 
 const API_BASE_URL = (
-  import.meta.env.VITE_API_BASE_URL || 'http://localhost:4000'
+  'https://api.dcconexporter.gurum.cat/'
 ).replace(/\/$/, '')
 
 const SESSION_STORAGE_KEY = 'dccon-exporter-session'
@@ -519,7 +519,7 @@ function onJobToggle(jobId, event) {
 
 .input-row {
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   gap: 1rem;
 }
 
