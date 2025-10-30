@@ -289,9 +289,6 @@ function onJobToggle(jobId, event) {
             </option>
           </select>
         </div>
-        <p class="helper-text">
-          URL을 입력하고 원하는 출력 크기를 선택하세요. (기본 200 x 200)
-        </p>
         <button
           type="submit"
           class="primary submit-button"
