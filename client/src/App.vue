@@ -272,27 +272,6 @@ function onJobToggle(jobId, event) {
             autocomplete="off"
             required
           />
-          <button
-            type="submit"
-            class="primary icon-button"
-            :disabled="isSubmitting"
-            :aria-label="isSubmitting ? '추출 중' : '대기열 추가'"
-          >
-            <span v-if="isSubmitting" class="spinner" aria-hidden="true" />
-            <svg
-              v-else
-              class="send-icon"
-              aria-hidden="true"
-              viewBox="0 0 24 24"
-            >
-              <path
-                d="M5 3.75a.75.75 0 0 0-1.1.66v15.18a.75.75 0 0 0 1.1.66l14-7.59a.75.75 0 0 0 0-1.32L5 3.75zm.9 2.74 10.22 5.51-10.22 5.51V6.49z"
-              />
-            </svg>
-            <span class="sr-only">
-              {{ isSubmitting ? '추출 중' : '대기열 추가' }}
-            </span>
-          </button>
         </div>
         <div class="options-row">
           <label class="resize-label" for="resize-select">이미지 크기</label>
@@ -313,6 +292,14 @@ function onJobToggle(jobId, event) {
         <p class="helper-text">
           URL을 입력하고 원하는 출력 크기를 선택하세요. (기본 200 x 200)
         </p>
+        <button
+          type="submit"
+          class="primary submit-button"
+          :disabled="isSubmitting"
+        >
+          <span v-if="isSubmitting" class="spinner" aria-hidden="true" />
+          <span>{{ isSubmitting ? '추출 중...' : '불러오기' }}</span>
+        </button>
       </form>
       <transition name="fade">
         <p
@@ -327,7 +314,7 @@ function onJobToggle(jobId, event) {
     <section class="queue-card">
       <header class="section-header">
         <div>
-          <h2>대기열</h2>
+          <h3>대기열</h3>
         </div>
         <span class="counter">{{ orderedJobs.length }}</span>
       </header>
@@ -392,7 +379,13 @@ function onJobToggle(jobId, event) {
 
             <details v-if="job.items?.length" class="item-gallery">
               <summary>
-                콘텐츠 ({{ job.itemCount }})
+                <span>콘텐츠 ({{ job.itemCount }})</span>
+                <svg class="item-arrow" aria-hidden="true" viewBox="0 0 24 24">
+                  <path
+                    d="M12 15.25a.75.75 0 0 1-.53-.22l-5-5a.75.75 0 1 1 1.06-1.06L12 13.44l4.47-4.47a.75.75 0 0 1 1.06 1.06l-5 5a.75.75 0 0 1-.53.22z"
+                    fill="currentColor"
+                  />
+                </svg>
               </summary>
               <div class="item-grid">
                 <div
@@ -448,9 +441,16 @@ function onJobToggle(jobId, event) {
         :src="exampleImage"
         alt="디시콘 링크 주소 복사 예시"
       />
-      <p>
-        디시콘 목록에서 디시콘을 우클릭 후 <strong>링크 주소 복사</strong>를 선택하면 모음집 주소를 손쉽게 가져올 수 있습니다.
-      </p>
+      <div>
+        <p>
+        디시콘 바로가기:
+        <a href="https://dccon.dcinside.com/" target="_blank" rel="noopener">dccon.dcinside.com</a>
+        </p>
+        <p>
+          디시콘을 우클릭 후 <strong>링크 주소 복사</strong>를 선택하면 모음집 주소를 손쉽게 가져올 수 있습니다.
+        </p>
+      </div>
+      
     </div>
   </div>
 </template>
@@ -499,14 +499,24 @@ function onJobToggle(jobId, event) {
 
 .form-card {
   padding: 2.5rem 2.2rem;
+  border: 1px solid rgba(148, 163, 184, 0.15);
+  border-radius: 20px;
+  background: rgba(15, 23, 42, 0.55);
+  box-shadow: 0 20px 60px rgba(15, 23, 42, 0.35);
+  backdrop-filter: blur(22px);
+  margin: 2.5rem 0;
 }
 .queue-card {
   background: rgba(15, 23, 42, 0.55);
   border: 1px solid rgba(148, 163, 184, 0.15);
   border-radius: 20px;
-  padding: 2.5rem 2.2rem;
+  padding: 1.5rem 1.2rem;
   box-shadow: 0 20px 60px rgba(15, 23, 42, 0.35);
   backdrop-filter: blur(22px);
+}
+.queue-card h3 {
+  margin: 0;
+  font-size: 1.3rem;
 }
 
 .form-label {
@@ -519,8 +529,9 @@ function onJobToggle(jobId, event) {
 
 .input-row {
   display: flex;
-  flex-direction: row;
-  gap: 1rem;
+  flex-direction: column;
+  gap: 0.75rem;
+  align-items: stretch;
 }
 
 .options-row {
@@ -558,6 +569,7 @@ function onJobToggle(jobId, event) {
   .input-row {
     flex-direction: row;
     align-items: center;
+    gap: 1rem;
   }
 }
 
@@ -600,22 +612,18 @@ button:disabled {
   cursor: not-allowed;
 }
 
-.icon-button {
+.submit-button {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 2.8rem;
-  height: 2.8rem;
-  padding: 0;
-}
-
-.send-icon {
-  width: 18px;
-  height: 18px;
-  fill: currentColor;
+  gap: 0.5rem;
+  width: 100%;
+  margin-top: 1.5rem;
+  padding: 0.85rem 1.2rem;
 }
 
 .spinner {
+  display: inline-block;
   width: 18px;
   height: 18px;
   border: 2px solid rgba(248, 250, 252, 0.25);
@@ -624,16 +632,9 @@ button:disabled {
   animation: spin 0.8s linear infinite;
 }
 
-.sr-only {
-  position: absolute;
-  width: 1px;
-  height: 1px;
-  padding: 0;
-  margin: -1px;
-  overflow: hidden;
-  clip: rect(0, 0, 0, 0);
-  white-space: nowrap;
-  border: 0;
+.submit-button .spinner {
+  width: 1.1rem;
+  height: 1.1rem;
 }
 
 @keyframes spin {
@@ -665,11 +666,6 @@ button:disabled {
   border: 1px solid rgba(59, 130, 246, 0.3);
 }
 
-.helper-text {
-  margin: 0.5rem 0 0;
-  color: rgba(148, 163, 184, 0.8);
-  font-size: 0.9rem;
-}
 
 .feedback {
   margin-top: 1.5rem;
@@ -711,6 +707,16 @@ button:disabled {
   margin: 0;
   color: rgba(226, 232, 240, 0.88);
   font-size: 0.9rem;
+}
+
+.guide-card a {
+  color: #93c5fd;
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.guide-card a:hover {
+  text-decoration: underline;
 }
 
 .guide-card strong {
@@ -972,26 +978,27 @@ button:disabled {
   color: #f8fafc;
   list-style: none;
   display: flex;
+  flex-direction: row;
   align-items: center;
-  justify-content: space-between;
+  justify-content: center;
   gap: 1rem;
 }
 
-.item-gallery summary::after {
-  content: '⌄';
-  font-size: 1rem;
-  opacity: 0.6;
+.item-gallery summary .item-arrow {
+  width: 1.1rem;
+  height: 1.1rem;
+  color: rgba(226, 232, 240, 0.75);
   transition: transform 0.2s ease;
 }
 
-.item-gallery[open] summary::after {
+.item-gallery[open] summary .item-arrow {
   transform: rotate(180deg);
 }
 
 .item-grid {
   display: grid;
   gap: 0.8rem;
-  grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
   padding: 0.85rem 1.1rem 1.1rem;
 }
 
